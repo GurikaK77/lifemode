@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#121212">
-    <title>LifeMode Ultimate</title>
+    <meta name="theme-color" content="#0f0c29">
+    <title>LifeMode: Evolved</title>
     <link rel="manifest" href="manifest.json"> 
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="style.css">
 
@@ -17,7 +17,7 @@
 </head>
 <body>
 
-    <svg style="position: absolute; width: 0; height: 0;" version="1.1">
+    <svg style="display: none;" aria-hidden="true">
         <defs>
             <pattern id="rustPattern" patternUnits="userSpaceOnUse" width="10" height="10">
                 <line x1="0" y1="0" x2="10" y2="10" stroke="#552222" stroke-width="2" />
@@ -26,220 +26,188 @@
         </defs>
     </svg>
 
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="scanlines"></div>
+
+    <header class="main-header">
+        <div class="level-box">
+            <div class="lvl-ring" id="dailyRing"></div>
+            <span id="levelDisplay">LVL 1</span>
+        </div>
+        <div class="currency-box">
+            <div class="currency-item xp-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                <span id="totalPoints">0</span> XP
+            </div>
+            <div class="currency-item coin-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M8 10h8M8 14h8"/></svg>
+                <span id="coinDisplay">0</span>
+            </div>
+        </div>
+    </header>
+
     <div id="home" class="section active">
-        <div class="home-header">
-            <div class="header-top">
-                <h2 class="app-title">LifeMode</h2>
-                <div class="level-badge" id="levelDisplay">LVL 1</div>
+        <h1 class="page-title">Dashboard</h1>
+        <div class="hero-card">
+            <h3>დღის პროგრესი</h3>
+            <div class="progress-bar-container">
+                <div class="progress-fill" id="dailyXpBar" style="width: 0%"></div>
             </div>
-
-            <div class="main-circle-container">
-                <div class="progress-ring" id="dailyRing">
-                    <div class="progress-inner">
-                        <span class="goal-label">დღის მიზანი</span>
-                        <p class="goal-text"><span id="dailyXp">0</span>%</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="activeBetBanner" class="bet-banner" style="display:none; margin: 0 20px 20px 20px;">
-                <div style="display:flex; flex-direction:column; align-items:flex-start;">
-                    <span>🎲 ფსონი აქტიურია</span>
-                    <small style="color:#fff; opacity:0.8;">პროგრესი: <span id="betTargetDisplay">0/0</span> XP</small>
-                </div>
-                <div style="text-align:right;">
-                    <small id="betTimerDisplay">24:00</small>
-                </div>
-            </div>
-
-            <div class="stats-row">
-                <div class="stat-card">
-                    <span class="stat-num" id="totalPoints">0</span>
-                    <span class="stat-desc">XP ქულა</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-num" id="coinDisplay">0</span>
-                    <span class="stat-desc">ოქრო</span>
-                </div>
+            <p class="hero-sub"><span id="dailyXp">0</span>% შესრულებულია</p>
+        </div>
+        <div id="activeBetBanner" class="bet-card" style="display:none;">
+            <div class="bet-info">
+                <strong>🎲 ფსონი აქტიურია</strong>
+                <small><span id="betTargetDisplay">0/0</span> XP</small>
             </div>
         </div>
-
-        <div class="chart-wrapper">
-            <div class="chart-container"><canvas id="xpChart"></canvas></div>
+        <div class="chart-box"><canvas id="xpChart"></canvas></div>
+        <div class="quick-stats-grid">
+            <div class="stat-mini">🔥 <span id="streakDisplay">0</span> დღე</div>
+            <div class="stat-mini">⚡ ბუსტი: <span id="boostDisplay">0%</span></div>
         </div>
-        <div style="height: 100px;"></div>
+        <div class="spacer"></div>
+    </div>
+
+    <div id="routine" class="section">
+        <h1 class="page-title">AI განრიგი</h1>
+        <div id="routineSetup" class="routine-setup-box">
+            <h3>📅 დღის დაგეგმვა</h3>
+            <div class="input-group">
+                <label>დაკავებული ხარ?</label>
+                <div class="time-range"><input type="time" id="busyStart" value="09:00"><span>-</span><input type="time" id="busyEnd" value="15:00"></div>
+            </div>
+            <div class="input-group">
+                <label>ვარჯიშის დრო</label>
+                <div class="time-range"><input type="time" id="workoutStart" value="17:00"><span>-</span><input type="time" id="workoutEnd" value="19:00"></div>
+            </div>
+            <div class="checkbox-group"><input type="checkbox" id="restDayToggle"><label for="restDayToggle">დღეს დასვენება (Rest Day)</label></div>
+            <button class="btn-primary" onclick="window.generateAiRoutine()">✨ გენერაცია</button>
+        </div>
+        <div id="routineTimeline" class="timeline-container" style="display:none;">
+            <div class="timeline-header"><span>მისია</span><button class="btn-xs" onclick="window.resetRoutine()">🔄 შეცვლა</button></div>
+            <div id="timelineItems" class="timeline-items"></div>
+        </div>
+        <div class="spacer"></div>
     </div>
 
     <div id="workoutPage" class="section">
-        <h2 class="section-title">ვარჯიში</h2>
-        <div style="padding: 0 20px;">
-            <div id="workoutPageGrid" class="activity-grid"></div>
-        </div>
-        <div style="height: 100px;"></div>
-    </div>
-
-    <div id="arena" class="section">
-        <h2 class="section-title">არენა</h2>
-        <div style="padding: 0 20px;">
-            
-            <div class="boss-card" id="bossCard">
-                <div class="boss-header">
-                    <div class="boss-icon" id="bossIconContainer"></div>
-                    <div style="flex:1">
-                        <strong class="boss-name" id="bossName">...</strong>
-                        <div class="boss-hp-bg"><div class="boss-hp-fill" id="bossHpBar"></div></div>
-                        <small id="bossHpText" style="color:#aaa; font-size:0.7rem;">0 / 0 HP</small>
-                    </div>
-                </div>
-            </div>
-
-            <div class="quest-card" id="questCard">
-                <div class="quest-header">
-                    <span class="quest-title">📜 დღის მისია</span>
-                </div>
-                <p id="questText" class="quest-desc">...</p>
-                <div class="quest-progress-bg"><div class="quest-progress-bar" id="questBar" style="width: 0%"></div></div>
-            </div>
-            
-            <h3 class="shop-section-title" style="margin-top:30px;">☠️ დამარცხებული ბოსები</h3>
-            <div id="graveyardGrid" class="shop-grid"><p style="color:#666; font-size:0.8rem;">ჯერ არავინ დაგიმარცხებია.</p></div>
-
-            <div style="height: 100px;"></div>
-        </div>
+        <h1 class="page-title">ვარჯიში</h1>
+        <div id="workoutPageGrid" class="cards-grid"></div>
+        <div class="spacer"></div>
     </div>
 
     <div id="body" class="section">
-        <h2 class="section-title">სხეულის ენერგია</h2>
+        <h1 class="page-title">სხეული & არენა</h1>
         
-        <div class="body-layout">
-            <div class="body-visual">
-                <svg viewBox="0 0 200 400" class="human-body-svg">
-                    <circle cx="100" cy="40" r="20" fill="#444" />
-                    <path id="visual-chest" d="M70 65 L130 65 L120 110 L80 110 Z" class="muscle-part" />
-                    <path id="visual-arms" d="M50 75 L70 65 L70 140 L50 140 M150 75 L130 65 L130 140 L150 140" class="muscle-part" />
-                    <path id="visual-abs" d="M80 112 L120 112 L115 160 L85 160 Z" class="muscle-part" />
-                    <path id="visual-legs" d="M85 162 L115 162 L125 320 L105 320 L100 230 L95 320 L75 320 Z" class="muscle-part" />
-                </svg>
-            </div>
-            <div class="body-stats-list">
-                <div class="stat-item-row"><div class="dot-indicator" id="dot-chest"></div><span>მკერდი</span><small id="text-chest">100%</small></div>
-                <div class="stat-item-row"><div class="dot-indicator" id="dot-arms"></div><span>ხელები</span><small id="text-arms">100%</small></div>
-                <div class="stat-item-row"><div class="dot-indicator" id="dot-abs"></div><span>პრესი</span><small id="text-abs">100%</small></div>
-                <div class="stat-item-row"><div class="dot-indicator" id="dot-legs"></div><span>ფეხები</span><small id="text-legs">100%</small></div>
+        <div class="body-wrapper">
+            <svg width="200" height="350" viewBox="0 0 200 350" class="human-body-svg">
+                <circle cx="100" cy="30" r="20" fill="#333" opacity="0.8" />
+                <path id="visual-chest" d="M70 60 L130 60 L120 100 L80 100 Z" class="muscle-part" />
+                <path id="visual-arms" d="M50 70 L70 60 L70 130 L50 130 M150 70 L130 60 L130 130 L150 130" class="muscle-part" />
+                <path id="visual-abs" d="M80 102 L120 102 L115 150 L85 150 Z" class="muscle-part" />
+                <path id="visual-legs" d="M85 152 L115 152 L125 300 L105 300 L100 220 L95 300 L75 300 Z" class="muscle-part" />
+            </svg>
+
+            <div class="muscle-stats">
+                <div class="m-stat"><span>მკერდი</span><div class="bar"><div id="bar-chest" style="width:100%"></div></div></div>
+                <div class="m-stat"><span>ხელები</span><div class="bar"><div id="bar-arms" style="width:100%"></div></div></div>
+                <div class="m-stat"><span>პრესი</span><div class="bar"><div id="bar-abs" style="width:100%"></div></div></div>
+                <div class="m-stat"><span>ფეხები</span><div class="bar"><div id="bar-legs" style="width:100%"></div></div></div>
             </div>
         </div>
-        <p id="recoveryStatusDisplay" style="text-align:center; font-size:0.8rem; margin-top:20px; font-weight:bold; min-height:20px;"></p>
-        <div style="height: 100px;"></div>
+        
+        <p id="recoveryStatusDisplay" class="status-text">...</p>
+        <hr class="divider">
+        <div class="boss-section" id="bossCard">
+            <div class="boss-visual"><div id="bossIconContainer" class="boss-avatar"></div></div>
+            <div class="boss-details"><h3 id="bossName">...</h3><div class="hp-bar-container"><div id="bossHpBar" class="hp-fill"></div></div><small id="bossHpText">...</small></div>
+        </div>
+        <div class="spacer"></div>
     </div>
 
     <div id="profile" class="section">
-        <h2 class="section-title">პროფილი</h2>
-        <div class="profile-container">
-            <div class="profile-header-simple">
-                <div class="profile-avatar-large" onclick="window.openAvatarSelection()">
-                    <span id="mainProfileAvatar" style="font-size: 50px;">👤</span>
-                    <div class="edit-icon">✏️</div>
-                </div>
-                <h2 class="profile-name-large" id="mainProfileName">...</h2>
-                <div class="profile-rank-large" id="mainProfileRank">...</div>
-            </div>
-            <div class="profile-actions vertical-list">
-                <div class="action-card shop-card" onclick="window.openShop()"><span class="card-icon">🛍</span><span>მარკეტი</span></div>
-                <div class="action-card" onclick="window.openInventory()"><span class="card-icon">🎒</span><span>ჩანთა</span></div>
-                <div class="action-card" onclick="window.openAchievements()"><span class="card-icon">🏆</span><span>მიღწევები</span></div>
-                <div class="action-card" onclick="window.openBetModal()"><span class="card-icon">🎲</span><span>ფსონი</span></div>
-                <div class="action-card" onclick="window.openSettingsMenu()"><span class="card-icon">⚙️</span><span>პარამეტრები</span></div>
-            </div>
-            <div id="activityLogContainer" class="log-container"></div>
-            <div style="height: 100px;"></div>
+        <h1 class="page-title">პროფილი</h1>
+        <div class="profile-header">
+            <div class="profile-pic" onclick="window.openAvatarSelection()"><span id="mainProfileAvatar">👤</span></div>
+            <div class="profile-info"><h2 id="mainProfileName">...</h2><span id="mainProfileRank" class="rank-badge">Rookie</span></div>
+            <button class="settings-btn" onclick="window.openSettingsMenu()">⚙️</button>
+        </div>
+        <div class="menu-list">
+            <button onclick="window.openShop()">🛍 მარკეტი</button>
+            <button onclick="window.openInventory()">🎒 ჩანთა</button>
+            <button onclick="window.openAchievements()">🏆 მიღწევები</button>
+            <button onclick="window.openBetModal()">🎲 ფსონი</button>
+        </div>
+        <h3>ისტორია</h3>
+        <div id="activityLogContainer" class="log-list"></div>
+        <div class="spacer"></div>
+    </div>
+
+    <div id="inputModal" class="modal blur-bg">
+        <div class="modal-card">
+            <h3 id="inputTitle">Activity</h3>
+            <input type="number" id="workoutInput" class="big-input" placeholder="0" inputmode="numeric">
+            <p id="inputUnit">unit</p>
+            <button id="btnAiCam" class="btn-ai" onclick="window.startAiSession()">📷 AI მთვლელი</button>
+            <div class="row-btns"><button class="btn-primary" onclick="window.confirmWorkout()">შენახვა</button><button class="btn-sec" onclick="window.closeModal('inputModal')">გაუქმება</button></div>
         </div>
     </div>
 
-    <div id="inputModal" class="modal">
-        <div class="modal-content">
-            <h3 id="inputTitle">რაოდენობა?</h3>
-            
-            <div class="manual-input-container">
-                <input type="number" id="workoutInput" class="input-field" placeholder="0" inputmode="numeric">
-                <p id="inputUnit" style="color:#888;">...</p>
+    <div id="shopModal" class="modal">
+        <div class="modal-card full-h">
+            <h3>🛍 მაღაზია</h3>
+            <div class="coin-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v12M8 10h8M8 14h8"/></svg>
+                <span id="shopCoinDisplay">0</span>
             </div>
-            
-            <button id="btnAiCam" class="btn-ai" onclick="window.startAiSession()" style="display:none;">
-                📷 კამერით დათვლა (AI)
-            </button>
-
-            <div class="modal-actions">
-                <button class="btn-main" onclick="window.confirmWorkout()">შენახვა</button>
-                <button class="btn-close" onclick="window.closeModal('inputModal')">გაუქმება</button>
-            </div>
+            <div class="scroll-y"><div id="shopThemesGrid" class="grid-2"></div><div id="shopGearGrid" class="grid-1"></div><div id="shopConsumablesGrid" class="grid-1"></div></div>
+            <button class="btn-close" onclick="window.closeModal('shopModal')">დახურვა</button>
         </div>
     </div>
 
-    <div id="aiOverlay" class="ai-overlay" style="display:none;">
-        <div class="ai-header">
-            <span id="aiCountDisplay">0</span>
-            <button class="btn-close-ai" onclick="window.stopAiSession()">დასრულება</button>
-        </div>
-        <video id="webcam" autoplay playsinline></video>
-        <canvas id="outputCanvas"></canvas>
-        <div class="ai-instruction">დადეთ ტელეფონი იატაკზე გვერდულად. უნდა ჩანდეს მხარი, იდაყვი და მაჯა.</div>
-        <div id="aiFeedback"></div>
-    </div>
-
-    <div id="shopModal" class="modal"><div class="modal-content" style="max-height: 80vh; overflow-y: auto;"><h3>🛍 მაღაზია</h3><div style="background:#333; padding:5px 10px; border-radius:10px;">🪙 <span id="shopCoinDisplay">0</span></div><h4 style="text-align:left; color:#888; margin:10px 0;">🛡️ აღჭურვილობა</h4><div id="shopGearGrid" class="shop-grid"></div><h4 style="text-align:left; color:#888; margin:20px 0;">💊 წამლები</h4><div id="shopConsumablesGrid" class="shop-grid"></div><h4 style="text-align:left; color:#888; margin:20px 0;">🎨 თემები</h4><div id="shopThemesGrid" class="shop-grid"></div><button class="btn-close" onclick="window.closeModal('shopModal')">დახურვა</button></div></div>
-    <div id="inventoryModal" class="modal"><div class="modal-content"><h3>🎒 ჩანთა</h3><div id="activeEffectsDisplay"></div><div id="inventoryGrid" class="shop-grid"></div><button class="btn-close" onclick="window.closeModal('inventoryModal')">დახურვა</button></div></div>
-    <div id="betModal" class="modal"><div class="modal-content"><h3>🎲 ფსონი</h3><p style="color:#aaa; font-size:0.9rem;">დადე ოქრო. 24 საათში 200 XP-ის დაგროვების შემთხვევაში მოიგებ ორმაგს.</p><input type="number" id="betAmountInput" class="input-field" placeholder="რაოდენობა"><button class="btn-main" onclick="window.placeBet()">დადება</button><button class="btn-close" onclick="window.closeModal('betModal')">გაუქმება</button></div></div>
-    <div id="achievementsModal" class="modal"><div class="modal-content"><h3>🏆 მიღწევები</h3><div id="achievementsGrid" class="shop-grid"></div><button class="btn-close" onclick="window.closeModal('achievementsModal')">დახურვა</button></div></div>
+    <div id="inventoryModal" class="modal"><div class="modal-card"><h3>🎒 ჩანთა</h3><div id="activeEffectsDisplay"></div><div id="inventoryGrid" class="grid-1 scroll-y" style="max-height:300px;"></div><button class="btn-close" onclick="window.closeModal('inventoryModal')">დახურვა</button></div></div>
+    <div id="achievementsModal" class="modal"><div class="modal-card"><h3>🏆 მიღწევები</h3><div id="achievementsGrid" class="grid-1 scroll-y" style="max-height:400px;"></div><button class="btn-close" onclick="window.closeModal('achievementsModal')">დახურვა</button></div></div>
+    <div id="betModal" class="modal"><div class="modal-card"><h3>🎲 ფსონი</h3><p>მოაგროვე 200XP 24 საათში.</p><input type="number" id="betAmountInput" class="big-input" placeholder="რაოდენობა"><button class="btn-primary" onclick="window.placeBet()">დადება</button><button class="btn-close" onclick="window.closeModal('betModal')">გაუქმება</button></div></div>
+    <div id="avatarModal" class="modal"><div class="modal-card"><h3>აირჩიე ავატარი</h3><div id="avatarGrid" class="avatar-grid"></div><button class="btn-close" onclick="window.closeModal('avatarModal')">დახურვა</button></div></div>
     
+    <div id="aiOverlay" class="ai-overlay">
+        <video id="webcam" autoplay playsinline></video><canvas id="outputCanvas"></canvas>
+        <div class="ai-hud"><span id="aiCountDisplay">0</span><div id="aiFeedback">...</div><button onclick="window.stopAiSession()">დასრულება</button></div>
+    </div>
+
     <div id="settingsMenuModal" class="modal">
-        <div class="modal-content">
-            <h3>⚙️ პარამეტრები</h3>
-            <div class="settings-list">
-                <div class="setting-item" onclick="window.openProfileEdit()">✏️ სახელის შეცვლა</div>
-                <div class="setting-item" onclick="window.openSportsEdit()">🏅 სპორტის არჩევა</div>
-                <div class="setting-item text-red" onclick="window.resetAllData()">🗑 წაშლა</div>
-            </div>
-            
-            <input type="text" id="secretCodeInput" class="modal-input" placeholder="Secret Code..." style="margin-top:20px; opacity:0.5; font-size:0.8rem;" oninput="window.checkSecretCode(this.value)">
-            
-            <div id="devMenu" style="display:none; margin-top:15px; border-top:1px solid #444; padding-top:10px; position:relative;">
-                
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <h4 style="color:violet; margin:0;">👾 God Mode</h4>
-                    <button class="btn-small" style="background:red; color:white; border:none; padding:5px 10px; border-radius:5px;" onclick="window.closeDevMenu()">✖️ დახურვა</button>
-                </div>
-
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                    <button class="btn-small" style="background:#444; border:none; color:white; padding:8px; border-radius:8px;" onclick="window.devAddCoins()">Add Coins</button>
-                    <button class="btn-small" style="background:#444; border:none; color:white; padding:8px; border-radius:8px;" onclick="window.devAddXp()">Add XP</button>
-                    <button class="btn-small" style="background:#444; border:none; color:white; padding:8px; border-radius:8px; grid-column: span 2;" onclick="window.devSetMuscle()">Set Muscles %</button>
-                    <button class="btn-small" style="background:#444; border:none; color:white; padding:8px; border-radius:8px; grid-column: span 2;" onclick="window.devUnlockAll()">🔓 Unlock All</button>
-                </div>
-            </div>
-
+        <div class="modal-card">
+            <h3>პარამეტრები</h3>
+            <button class="list-btn" onclick="window.openProfileEdit()">✏️ სახელის შეცვლა</button>
+            <button class="list-btn" onclick="window.openSportsEdit()">🏅 სპორტის არჩევა</button>
+            <button class="list-btn text-danger" onclick="window.resetAllData()">🗑 წაშლა</button>
+            <input type="text" id="secretCodeInput" class="secret-input" placeholder="Secret Code..." oninput="window.checkSecretCode(this.value)">
+            <div id="devMenu" style="display:none;"><button onclick="window.devAddCoins()">+Coins</button><button onclick="window.devAddXp()">+XP</button><button onclick="window.devSetMuscle()">Muscles</button><button onclick="window.devUnlockAll()">Unlock</button></div>
             <button class="btn-close" onclick="window.closeModal('settingsMenuModal')">დახურვა</button>
         </div>
     </div>
 
-    <div id="editProfileModal" class="modal"><div class="modal-content"><h3>რედაქტირება</h3><input type="text" id="modalNameInput" class="modal-input" placeholder="სახელი"><input type="number" id="modalAgeInput" class="modal-input" placeholder="ასაკი"><button class="btn-main" onclick="window.saveProfileChanges()">შენახვა</button></div></div>
-    <div id="avatarModal" class="modal"><div class="modal-content"><h3>აირჩიე ავატარი</h3><div id="avatarGrid" class="avatar-grid"></div><button class="btn-close" onclick="window.closeModal('avatarModal')">დახურვა</button></div></div>
-    <div id="sportsModal" class="modal"><div class="modal-content"><h3>🏅 აირჩიე სპორტი</h3><div id="sportsSelectorGrid" class="sports-grid"></div><button class="btn-main" onclick="window.closeModal('sportsModal')">დასრულება</button></div></div>
+    <div id="editProfileModal" class="modal"><div class="modal-card"><h3>რედაქტირება</h3><input id="modalNameInput" class="big-input" placeholder="სახელი"><button class="btn-primary" onclick="window.saveProfileChanges()">შენახვა</button></div></div>
+    <div id="sportsModal" class="modal"><div class="modal-card full-h"><h3>სპორტი</h3><div id="sportsSelectorGrid" class="grid-3"></div><button class="btn-primary" onclick="window.closeModal('sportsModal')">შენახვა</button></div></div>
 
-    <nav class="navbar">
-        <button class="nav-item active" onclick="window.showPage('home', this)"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>მთავარი</span></button>
-        <button class="nav-item" onclick="window.showPage('workoutPage', this)"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/></svg><span>ვარჯიში</span></button>
-        <button class="nav-item" onclick="window.showPage('arena', this)"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg><span>არენა</span></button>
-        <button class="nav-item" onclick="window.showPage('body', this)"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg><span>სხეული</span></button>
-        <button class="nav-item" onclick="window.showPage('profile', this)"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>პროფილი</span></button>
+    <nav class="glass-nav">
+        <button class="nav-btn active" onclick="window.showPage('home', this)"><svg width="24" height="24" viewBox="0 0 24 24" class="nav-icon" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+        <button class="nav-btn" onclick="window.showPage('routine', this)"><svg width="24" height="24" viewBox="0 0 24 24" class="nav-icon" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Routine</span></button>
+        <button class="nav-btn" onclick="window.showPage('workoutPage', this)"><svg width="24" height="24" viewBox="0 0 24 24" class="nav-icon" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h12M6 20h12M4 9h16M4 15h16M9 4v16M15 4v16"/></svg><span>Gym</span></button>
+        <button class="nav-btn" onclick="window.showPage('body', this)"><svg width="24" height="24" viewBox="0 0 24 24" class="nav-icon" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5 21v-9h14v9"/></svg><span>Body</span></button>
+        <button class="nav-btn" onclick="window.showPage('profile', this)"><svg width="24" height="24" viewBox="0 0 24 24" class="nav-icon" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg><span>Me</span></button>
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    
     <script type="module" src="data.js"></script>
     <script type="module" src="ui.js"></script>
-    <script type="module" src="ai.js"></script>
     <script type="module" src="logic.js"></script>
+    <script type="module" src="ai.js"></script>
     <script type="module" src="script.js"></script>
 </body>
 </html>
