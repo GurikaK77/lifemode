@@ -25,6 +25,14 @@ window.placeBet = Logic.placeBet;
 window.openAvatarSelection = Logic.openAvatarSelection;
 window.selectAvatar = Logic.selectAvatar;
 
+// Dev Mode Bindings
+window.checkSecretCode = Logic.checkSecretCode;
+window.closeDevMenu = Logic.closeDevMenu;
+window.devAddCoins = Logic.devAddCoins;
+window.devAddXp = Logic.devAddXp;
+window.devSetMuscle = Logic.devSetMuscle;
+window.devUnlockAll = Logic.devUnlockAll;
+
 // AI Bindings
 window.startAiSession = Logic.startAiSession;
 window.stopAiSession = Logic.stopAiSession;
