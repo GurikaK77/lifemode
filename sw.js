@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifemode-ai-v1';
+const CACHE_NAME = 'lifemode-v7-ai';
 const ASSETS = [
     './',
     './index.html',
@@ -9,11 +9,14 @@ const ASSETS = [
     './logic.js',
     './ai.js',
     './manifest.json',
-    // AI ბიბლიოთეკები (რომ ოფლაინში იმუშაოს პირველი ჩატვირთვის შემდეგ)
     'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core',
     'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter',
     'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl',
-    'https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection'
+    'https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection',
+    'https://cdn.jsdelivr.net/npm/chart.js',
+    'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js',
+    'https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css',
+    'https://cdn.jsdelivr.net/npm/toastify-js'
 ];
 
 self.addEventListener('install', (event) => {
