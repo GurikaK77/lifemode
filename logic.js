@@ -15,6 +15,7 @@ export function saveData() {
     localStorage.setItem('userAvatar', state.userAvatar);
     localStorage.setItem('userSports', JSON.stringify(state.userSports));
     localStorage.setItem('theme', state.currentTheme);
+    localStorage.setItem('ownedThemes', JSON.stringify(state.ownedThemes));
     localStorage.setItem('lastWorkoutTime', state.lastWorkoutTime);
     localStorage.setItem('activeBet', JSON.stringify(state.activeBet));
     localStorage.setItem('activityLog', JSON.stringify(state.activityLog));
@@ -36,7 +37,7 @@ export function setupInput(id) {
     document.getElementById('inputModal').style.display = 'flex'; 
     const input = document.getElementById('workoutInput');
     input.value = ''; 
-    input.focus(); // Focus fix for mobile
+    input.focus(); 
     
     document.getElementById('inputTitle').innerText = act.name;
     document.getElementById('inputUnit').innerText = (act.unit === 'სთ' ? 'საათი' : (act.unit === 'წთ' ? 'წუთი' : 'რაოდენობა'));
@@ -200,7 +201,7 @@ function calculateGoal() {
     let progress = 0; if (avgEnergy <= 60) { progress = 100; } else { progress = ((100 - avgEnergy) / 40) * 100; } 
     if (progress < 0) progress = 0; progress = Math.round(progress); 
     const xpEl = document.getElementById('dailyXp'); if(xpEl) xpEl.innerText = progress; 
-    const ring = document.getElementById('dailyRing'); if(ring) ring.style.background = `conic-gradient(var(--yellow) ${progress * 3.6}deg, #333 0deg)`; 
+    const ring = document.getElementById('dailyRing'); if(ring) ring.style.background = `conic-gradient(var(--neon-main) ${progress * 3.6}deg, #111 0deg)`; 
 }
 
 function checkLevelUp() { 
@@ -315,10 +316,23 @@ export function buyItem(id, price, name) {
 }
 
 export function buyTheme(id, price) { 
-    if(state.currentTheme === id) return; 
+    if(state.ownedThemes.includes(id)) {
+        if(state.currentTheme === id) return;
+        state.currentTheme = id; 
+        applyTheme(id); 
+        saveData(); 
+        UI.openShop(); UI.updateUI(); UI.SoundFX.click();
+        UI.showToast("თემა დაყენებულია!", "success");
+        return;
+    }
+
     if(price === 0 || state.coins >= price) { 
         if(price > 0 && !confirm(`გინდა იყიდო თემა?`)) return; 
-        if(price > 0) state.coins -= price; state.currentTheme = id; applyTheme(id); saveData(); 
+        if(price > 0) state.coins -= price; 
+        state.ownedThemes.push(id); 
+        state.currentTheme = id; 
+        applyTheme(id); 
+        saveData(); 
         UI.openShop(); UI.updateUI(); UI.SoundFX.success(); 
     } else { UI.SoundFX.error(); UI.showToast("არაა საკმარისი ოქრო", "error"); } 
 }
@@ -348,10 +362,10 @@ export function useItem(id) {
 
 export function applyTheme(id) { 
     const root = document.documentElement; 
-    if(id === 'default') { root.style.setProperty('--green', '#00ff9d'); root.style.setProperty('--yellow', '#ffcc00'); } 
-    else if (id === 'gold') { root.style.setProperty('--green', '#ffd700'); root.style.setProperty('--yellow', '#fff8e1'); } 
-    else if (id === 'cyber') { root.style.setProperty('--green', '#00e5ff'); root.style.setProperty('--yellow', '#ff00ff'); } 
-    else if (id === 'red') { root.style.setProperty('--green', '#ff0055'); root.style.setProperty('--yellow', '#ff4444'); } 
+    if(id === 'default') { root.style.setProperty('--neon-main', '#00ff9d'); root.style.setProperty('--neon-accent', '#bc13fe'); } 
+    else if (id === 'gold') { root.style.setProperty('--neon-main', '#ffd700'); root.style.setProperty('--neon-accent', '#ffaa00'); } 
+    else if (id === 'cyber') { root.style.setProperty('--neon-main', '#00e5ff'); root.style.setProperty('--neon-accent', '#ff00ff'); } 
+    else if (id === 'red') { root.style.setProperty('--neon-main', '#ff0055'); root.style.setProperty('--neon-accent', '#ff4444'); } 
 }
 
 export function checkBossAttack() {
@@ -402,4 +416,63 @@ export function saveProfileChanges() {
     state.userName = nameVal; 
     if(ageVal && ageVal > 0) { state.userAge = ageVal; }
     saveData(); UI.updateProfileUI(); UI.closeModal('editProfileModal'); UI.showToast("პროფილი წარმატებით განახლდა!", "success");
+}
+
+// --- DEVELOPER MODE / GOD MODE LOGIC ---
+export function checkSecretCode(val) {
+    if(val === 'dzroxa') {
+        document.getElementById('devMenu').style.display = 'block';
+        document.getElementById('secretCodeInput').value = ''; 
+        UI.showToast("🐮 God Mode Activated: Moooo!", "success");
+        UI.SoundFX.levelUp();
+    }
+}
+
+export function closeDevMenu() {
+    document.getElementById('devMenu').style.display = 'none';
+}
+
+export function devAddCoins() {
+    const val = prompt("შეიყვანე ოქროს რაოდენობა:");
+    const num = parseInt(val);
+    if(!isNaN(num)) {
+        state.coins += num;
+        saveData();
+        UI.updateUI();
+        UI.showToast(`💰 ბალანსი შეიცვალა: ${num > 0 ? '+' : ''}${num}`);
+    }
+}
+
+export function devAddXp() {
+    const val = prompt("შეიყვანე XP რაოდენობა:");
+    const num = parseInt(val);
+    if(!isNaN(num)) {
+        state.xp += num;
+        checkLevelUp();
+        saveData();
+        UI.updateUI();
+        UI.showToast(`🧠 XP შეიცვალა: ${num > 0 ? '+' : ''}${num}`);
+    }
+}
+
+export function devSetMuscle() {
+    const val = prompt("კუნთების ენერგია % (0-100):");
+    let num = parseFloat(val);
+    if(!isNaN(num)) {
+        if(num < 0) num = 0;
+        if(num > 100) num = 100;
+        for(let k in state.muscles) state.muscles[k].energy = num;
+        saveData();
+        UI.renderBody();
+        UI.showToast(`💪 კუნთები დაყენდა ${num}%-ზე`);
+    }
+}
+
+export function devUnlockAll() {
+    shopItems.themes.forEach(t => { if(!state.ownedThemes.includes(t.id)) state.ownedThemes.push(t.id); });
+    shopItems.gear.forEach(g => { if(!state.ownedGear.includes(g.id)) state.ownedGear.push(g.id); });
+    achievements.forEach(a => { if(!state.unlockedAchievements.includes(a.id)) state.unlockedAchievements.push(a.id); });
+    saveData();
+    UI.updateUI();
+    UI.showToast("🔓 ყველაფერი გაიხსნა!");
 }
