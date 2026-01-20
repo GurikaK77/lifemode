@@ -92,6 +92,7 @@ export const state = {
     userName: localStorage.getItem('userName') || "LifeMode",
     userAvatar: localStorage.getItem('userAvatar') || "👤",
     currentTheme: localStorage.getItem('theme') || 'default',
+    ownedThemes: safeParse('ownedThemes', ['default']), // დამატებულია ნაყიდი თემები
     lastWorkoutTime: parseInt(localStorage.getItem('lastWorkoutTime')) || 0,
     activeBet: safeParse('activeBet', null),
     userSports: safeParse('userSports', ['run', 'pushups', 'pullups', 'squats', 'crunches']), 
